@@ -35,6 +35,7 @@
   </label>
 </template>
 <script>
+// 与radio 基本一致，可参考其注释
   import Emitter from 'element-ui/src/mixins/emitter';
 
   export default {
@@ -62,6 +63,7 @@
       };
     },
     computed: {
+      // 和radio中的model一样
       value: {
         get() {
           return this._radioGroup.value;
@@ -70,6 +72,7 @@
           this._radioGroup.$emit('input', value);
         }
       },
+      // 和radio不同的一点是radio-button 必须包含在radio-group里
       _radioGroup() {
         let parent = this.$parent;
         while (parent) {
@@ -81,6 +84,7 @@
         }
         return false;
       },
+      // 选中样式设置
       activeStyle() {
         return {
           backgroundColor: this._radioGroup.fill || '',

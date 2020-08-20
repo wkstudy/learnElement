@@ -50,6 +50,7 @@
 
     mixins: [Emitter],
 
+    // 父及组件可能是 form 或者 formitem, 其某些属性会影响到radio
     inject: {
       elForm: {
         default: ''
@@ -63,8 +64,8 @@
     componentName: 'ElRadio',
 
     props: {
-      value: {},
-      label: {},
+      value: {}, // 单选框的值    v-model和value 都有的情况下，优先取v-model的值  v-model 默认绑定value的prop和input的event
+      label: {}, // radio自己的值
       disabled: Boolean,
       name: String,
       border: Boolean,
@@ -77,6 +78,7 @@
       };
     },
     computed: {
+      // 判断外层是否有el-radio-group
       isGroup() {
         let parent = this.$parent;
         while (parent) {
@@ -89,6 +91,7 @@
         }
         return false;
       },
+      // v-model绑定的值可以是计算属性
       model: {
         get() {
           return this.isGroup ? this._radioGroup.value : this.value;
@@ -102,15 +105,21 @@
           this.$refs.radio && (this.$refs.radio.checked = this.model === this.label);
         }
       },
+      // 外层formitem的size 影响radio的size
+      // ？ {}.size 可以吗
       _elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
       },
+      // radio size
+      // ? this.$ELEMENT   answer: index.js定义： Vue.prototype.$ELEMENT = { size: opts.size || '', zIndex: opts.zIndex || 2000};
+      // {}.size 可以吗
       radioSize() {
         const temRadioSize = this.size || this._elFormItemSize || (this.$ELEMENT || {}).size;
         return this.isGroup
           ? this._radioGroup.radioGroupSize || temRadioSize
           : temRadioSize;
       },
+      // 禁用
       isDisabled() {
         return this.isGroup
           ? this._radioGroup.disabled || this.disabled || (this.elForm || {}).disabled
@@ -125,6 +134,7 @@
       handleChange() {
         this.$nextTick(() => {
           this.$emit('change', this.model);
+          // 找到el-radio-group组件也触发change事件
           this.isGroup && this.dispatch('ElRadioGroup', 'handleChange', this.model);
         });
       }

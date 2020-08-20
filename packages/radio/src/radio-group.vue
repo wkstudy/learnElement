@@ -31,7 +31,7 @@
     mixins: [Emitter],
 
     props: {
-      value: {},
+      value: {}, // v-model的绑定的值
       size: String,
       fill: String,
       textColor: String,
@@ -42,6 +42,7 @@
       _elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
       },
+      //？$vnode
       _elTag() {
         return (this.$vnode.data || {}).tag || 'div';
       },

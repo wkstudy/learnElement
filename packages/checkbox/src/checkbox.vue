@@ -74,14 +74,14 @@
 
     data() {
       return {
-        selfModel: false,
+        selfModel: false, // 默认checkbox的值
         focus: false,
         isLimitExceeded: false
       };
     },
 
     computed: {
-      model: {
+      model: {   
         get() {
           return this.isGroup
             ? this.store : this.value !== undefined
@@ -90,6 +90,7 @@
 
         set(val) {
           if (this.isGroup) {
+            // 有checkboxgroup的话，val为数组（被选中的值）
             this.isLimitExceeded = false;
             (this._checkboxGroup.min !== undefined &&
               val.length < this._checkboxGroup.min &&
@@ -107,9 +108,9 @@
           }
         }
       },
-
       isChecked() {
         if ({}.toString.call(this.model) === '[object Boolean]') {
+          // 比较特殊的一点，如果checkbox的值为true（boolean）， 会直接被当作选中状态
           return this.model;
         } else if (Array.isArray(this.model)) {
           return this.model.indexOf(this.label) > -1;
@@ -118,6 +119,7 @@
         }
       },
 
+      // 查找上层是否有checkboxgroup， 如果有就用_checkBoxGroup属性保存checkboxgroup元素
       isGroup() {
         let parent = this.$parent;
         while (parent) {
@@ -136,8 +138,10 @@
       },
 
       /* used to make the isDisabled judgment under max/min props */
+      // checkbox 触发 min max， 变成disableed状态
       isLimitDisabled() {
         const { max, min } = this._checkboxGroup;
+        // 设置了max min的前提下， 当达到max，但当前这个checkbox没被选中或者达到min，当前这个checkbox被选中了，此时这个checkbox的isLimitDisabled 返回true
         return !!(max || min) &&
           (this.model.length >= max && !this.isChecked) ||
           (this.model.length <= min && this.isChecked);
@@ -177,6 +181,7 @@
     },
 
     methods: {
+      // 当设置checked后， 给model(input的value值）初始化
       addToStore() {
         if (
           Array.isArray(this.model) &&
@@ -205,6 +210,7 @@
     },
 
     created() {
+      // checked 属性的唯一作用是如果设置的话触发 addToStore方法
       this.checked && this.addToStore();
     },
     mounted() { // 为indeterminate元素 添加aria-controls 属性

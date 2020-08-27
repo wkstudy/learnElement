@@ -108,6 +108,8 @@
     },
 
     methods: {
+      // radio-button必定被包裹在group中，所以只用向radio-group触发
+      // 注意这里不是直接触发change事件，而是在radio-group中监听到此事件后，再将change事件暴露出来
       handleChange() {
         this.$nextTick(() => {
           this.dispatch('ElRadioGroup', 'handleChange', this.value);

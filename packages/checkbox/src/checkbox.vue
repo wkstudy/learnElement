@@ -21,6 +21,7 @@
       :aria-checked="indeterminate ? 'mixed' : false"
     >
       <span class="el-checkbox__inner"></span>
+      <!-- 只有一个checkbox的情况 -->
       <input
         v-if="trueLabel || falseLabel"
         class="el-checkbox__original"
@@ -100,6 +101,7 @@
               val.length > this._checkboxGroup.max &&
               (this.isLimitExceeded = true));
 
+            // 此处的两个input触发事件应该是为了完成v-model在组件里的使用（v-model默认监听value和input）
             this.isLimitExceeded === false &&
             this.dispatch('ElCheckboxGroup', 'input', [val]);
           } else {
@@ -110,11 +112,14 @@
       },
       isChecked() {
         if ({}.toString.call(this.model) === '[object Boolean]') {
+          // checkbox 只有一个
           // 比较特殊的一点，如果checkbox的值为true（boolean）， 会直接被当作选中状态
           return this.model;
         } else if (Array.isArray(this.model)) {
+          // checkbox >= 2
           return this.model.indexOf(this.label) > -1;
         } else if (this.model !== null && this.model !== undefined) {
+          // checkbox只有一个
           return this.model === this.trueLabel;
         }
       },
@@ -138,7 +143,7 @@
       },
 
       /* used to make the isDisabled judgment under max/min props */
-      // checkbox 触发 min max， 变成disableed状态
+      // checkbox 触发 min max， 变成disabled状态
       isLimitDisabled() {
         const { max, min } = this._checkboxGroup;
         // 设置了max min的前提下， 当达到max，但当前这个checkbox没被选中或者达到min，当前这个checkbox被选中了，此时这个checkbox的isLimitDisabled 返回true
@@ -200,6 +205,8 @@
         } else {
           value = this.falseLabel === undefined ? false : this.falseLabel;
         }
+        // 此处的change事件是为了暴露给用户，获取值
+        // 只有一个值时， 该checkbox的值能够在boolean+true-label/false-label里选择
         this.$emit('change', value, ev);
         this.$nextTick(() => {
           if (this.isGroup) {
@@ -210,6 +217,7 @@
     },
 
     created() {
+      // 当组件传了 checked 后， 对model值进行初始化
       // checked 属性的唯一作用是如果设置的话触发 addToStore方法
       this.checked && this.addToStore();
     },

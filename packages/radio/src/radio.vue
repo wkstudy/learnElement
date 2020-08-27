@@ -93,6 +93,7 @@
       },
       // v-model绑定的值可以是计算属性
       model: {
+        // 本来这里应该是prop 传递的value, 但由于“单向数据流”的概念，prop的值不鼓励在子组件中改变值，因此才有了model值
         get() {
           return this.isGroup ? this._radioGroup.value : this.value;
         },
@@ -100,19 +101,18 @@
           if (this.isGroup) {
             this.dispatch('ElRadioGroup', 'input', [val]);
           } else {
+            // 配合el-radio的v-model, v-model的值
             this.$emit('input', val);
           }
           this.$refs.radio && (this.$refs.radio.checked = this.model === this.label);
         }
       },
       // 外层formitem的size 影响radio的size
-      // ？ {}.size 可以吗
       _elFormItemSize() {
         return (this.elFormItem || {}).elFormItemSize;
       },
       // radio size
       // ? this.$ELEMENT   answer: index.js定义： Vue.prototype.$ELEMENT = { size: opts.size || '', zIndex: opts.zIndex || 2000};
-      // {}.size 可以吗
       radioSize() {
         const temRadioSize = this.size || this._elFormItemSize || (this.$ELEMENT || {}).size;
         return this.isGroup

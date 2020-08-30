@@ -20,13 +20,16 @@ import { kebabCase } from 'element-ui/src/utils/util';
  *    };
  *  },
  */
+
+
+ // 把使用 kebab-case (短横线分隔命名) 命名法的data、event中 /([^-])([A-Z])/的 "-"后面的大写字母转为小写
 export default {
   mounted() {
     if (process.env.NODE_ENV === 'production') return;
     if (!this.$vnode) return;
     const { props = {}, events = {} } = this.getMigratingConfig();
     const { data, componentOptions } = this.$vnode;
-    const definedProps = data.attrs || {};
+    const definedProps = data.attrs || {}; // data.attrs 里只保存形如 abc-Def的属性（“-”后面是大写字母），不保存abc-def的属性
     const definedEvents = componentOptions.listeners || {};
 
     for (let propName in definedProps) {

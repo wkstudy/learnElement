@@ -103,6 +103,8 @@
       };
     },
     created() {
+      // 容错处理
+      // 当value的值不在[activeValue, inactiveValue]内，直接触发input事件，把外层v-model的值改为inactiveValue(switch关闭的状态)
       if (!~[this.activeValue, this.inactiveValue].indexOf(this.value)) {
         this.$emit('input', this.inactiveValue);
       }
@@ -148,6 +150,7 @@
       getMigratingConfig() {
         return {
           props: {
+            // 属性名称改变提醒
             'on-color': 'on-color is renamed to active-color.',
             'off-color': 'off-color is renamed to inactive-color.',
             'on-text': 'on-text is renamed to active-text.',

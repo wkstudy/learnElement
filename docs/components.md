@@ -15,3 +15,8 @@
 2. 涉及到v-model 、provide/inject等vue api的使用
 3. 隐藏input, 使用span完成单选按钮功能，会在样式上可控性更好
 4. 使用场景通常为一组checkbox, 因此拆分了radio、radio-group组件
+
+## switch
+1. switch和一个单独使用的checkbox是一样的，因此这里也使用了<input type='checkbox'>
+2. 主要依赖v-model完成整体功能
+3. 逻辑并不复杂，但重点在页面结构、布局的设计（after伪元素的使用、transiton动画)

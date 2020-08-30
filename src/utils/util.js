@@ -141,6 +141,7 @@ export const autoprefixer = function(style) {
   return style;
 };
 
+// 把 asdf-Adv-Sdsf 转换为asdf-adv-sdsf
 export const kebabCase = function(str) {
   const hyphenateRE = /([^-])([A-Z])/g;
   return str

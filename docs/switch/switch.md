@@ -66,7 +66,7 @@ element:after {
 ## 问题
 Q: 为什么执行两次replace，我理解执行一次就可以
 ```
-// mixins/utils/util.js
+// src/utils/util.js
 export const kebabCase = function(str) {
   const hyphenateRE = /([^-])([A-Z])/g;
   return str
@@ -76,11 +76,36 @@ export const kebabCase = function(str) {
 };
 ```
 
-A: ?
+A: 此函数目的是将驼峰命名改为 kebab-case 命名。第二次replace的目的是解决连续两个大写字母的问题。
+```
+ const once = function(str) {
+   const hyphenateRE = /([^-])([A-Z])/g;
+    return str
+      .replace(hyphenateRE, '$1-$2')
+ }
+ const twice = function(str) {
+   const hyphenateRE = /([^-])([A-Z])/g;
+    return str
+      .replace(hyphenateRE, '$1-$2')
+      .replace(hyphenateRE, '$1-$2')
+ }
+ // 对于有连着的两个大写字母
+ once('aBBc') // "a-BBc"
+ twice('aBBc') // "a-B-Bc"
+
+ Q: 能连着的三个/四个（大于两个）大写字母呢？
+ A: 第三个大写字母在第一次replace的时候就被识别了，第四个大写字母在第二次replace的时候被识别，以此类推
+once('aBBBc') // "a-BB-Bc"
+twice('aBBBc') // "a-B-B-Bc"
+once('aBBBBc') // "a-BB-BBc"
+twice('aBBBBc') // "a-B-B-B-Bc"
+ ```
 
 Q: radio、checkbox、switch我一直以为是点击到了里面的input，触发了change事件才改变值的，但突然发现这里的input经过css处理，是点击不到的，那么每次点击后，value是怎么改变的
 
-A: ?
+A: switch是通过最外层div的click事件触发的，
+  radio,checkbox最外层是label，点击label就可以直接触发内层的input。到这里才明白为什么radio/checkbox的外层为啥是个label, 而不是别的元素。
+
 ---
 ## todo
 ---
@@ -133,6 +158,6 @@ A: ?
   }
   ```
 
-## checkbox组件设计总结(和radio一样)
+## switch组件总结
 1. 主要依赖v-model完成整体功能
 2. 逻辑并不复杂，但重点在页面结构、布局的设计（after伪元素的使用、transiton动画)

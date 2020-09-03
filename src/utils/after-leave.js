@@ -6,6 +6,7 @@
  * @param {Number} speed the speed of transition, default value is 300ms
  * @param {Boolean} once weather bind after-leave once. default value is false.
  */
+// vue 动画  执行afterLeave阶段的js钩子
 export default function(instance, callback, speed = 300, once = false) {
   if (!instance || !callback) throw new Error('instance & callback is required');
   let called = false;

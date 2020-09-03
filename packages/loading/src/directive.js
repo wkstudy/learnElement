@@ -10,6 +10,7 @@ loadingDirective.install = Vue => {
   if (Vue.prototype.$isServer) return;
   const toggleLoading = (el, binding) => {
     if (binding.value) {
+      // 显示loading
       Vue.nextTick(() => {
         if (binding.modifiers.fullscreen) {
           el.originalPosition = getStyle(document.body, 'position');
@@ -22,6 +23,7 @@ loadingDirective.install = Vue => {
           removeClass(el.mask, 'is-fullscreen');
 
           if (binding.modifiers.body) {
+            // 此处计算el的大小和位置考虑的很周全, 可以借鉴一下
             el.originalPosition = getStyle(document.body, 'position');
 
             ['top', 'left'].forEach(property => {
@@ -44,6 +46,7 @@ loadingDirective.install = Vue => {
         }
       });
     } else {
+      // 关闭loading
       afterLeave(el.instance, _ => {
         if (!el.instance.hiding) return;
         el.domVisible = false;
@@ -60,6 +63,7 @@ loadingDirective.install = Vue => {
   };
   const insertDom = (parent, el, binding) => {
     if (!el.domVisible && getStyle(el, 'display') !== 'none' && getStyle(el, 'visibility') !== 'hidden') {
+      // 设置 loading 大小 、位置...
       Object.keys(el.maskStyle).forEach(property => {
         el.mask.style[property] = el.maskStyle[property];
       });
@@ -94,6 +98,8 @@ loadingDirective.install = Vue => {
       const backgroundExr = el.getAttribute('element-loading-background');
       const customClassExr = el.getAttribute('element-loading-custom-class');
       const vm = vnode.context;
+      
+      // 创建一个loading
       const mask = new Mask({
         el: document.createElement('div'),
         data: {
@@ -108,10 +114,12 @@ loadingDirective.install = Vue => {
       el.mask = mask.$el;
       el.maskStyle = {};
 
+      // 【2次触发是否显示loading】 1: 初始化时触发toggleLoading
       binding.value && toggleLoading(el, binding);
     },
 
     update: function(el, binding) {
+      // 【2次触发是否显示loading】 2: parent元素变化时触发toggleLoading
       el.instance.setText(el.getAttribute('element-loading-text'));
       if (binding.oldValue !== binding.value) {
         toggleLoading(el, binding);
@@ -119,6 +127,7 @@ loadingDirective.install = Vue => {
     },
 
     unbind: function(el, binding) {
+      // 移除loading
       if (el.domInserted) {
         el.mask &&
         el.mask.parentNode &&

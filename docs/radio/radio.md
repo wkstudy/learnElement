@@ -63,7 +63,7 @@ A: {}.size 只会报语法错误，如果elFormItem 不存在的话，this.elFor
 
 Q 如果radio 、radio-button都在change时$emit('change'), 那么radio-group是都可以监听到的，但为啥radio-button 会设计成先触发handleChange,然后再触发change（而由于监听handleCahgne被设计到了radio-group的created中，导致实际上对于radio-button的change， radio-group是监听不到）
 
-A: 
+A: 我忽略了$on $emit 是订阅事件，虽然是在created中执行，但只要radio-button 触发$emit，那么就可以通过$on监听到这个事件。同时也要学习这种设计方法，对于注定在外层又一个父元素的情况，内层元素往外触发事件时，只需要在父元素的created中$on监听就好了。
 
 ![image](img/radio.png)
 ![image](img/radio-button.png)

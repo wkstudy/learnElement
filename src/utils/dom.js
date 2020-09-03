@@ -14,8 +14,10 @@ const trim = function(string) {
 /* istanbul ignore next */
 const camelCase = function(name) {
   return name.replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+    // 驼峰命名法，首字母不大写
     return offset ? letter.toUpperCase() : letter;
   }).replace(MOZ_HACK_REGEXP, 'Moz$1');
+  // moz属性需要将m大写
 };
 
 /* istanbul ignore next */
@@ -64,6 +66,7 @@ export const once = function(el, event, fn) {
 };
 
 /* istanbul ignore next */
+// 已读
 export function hasClass(el, cls) {
   if (!el || !cls) return false;
   if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.');
@@ -75,6 +78,7 @@ export function hasClass(el, cls) {
 };
 
 /* istanbul ignore next */
+// 已读
 export function addClass(el, cls) {
   if (!el) return;
   var curClass = el.className;
@@ -96,6 +100,7 @@ export function addClass(el, cls) {
 };
 
 /* istanbul ignore next */
+// 已读
 export function removeClass(el, cls) {
   if (!el || !cls) return;
   var classes = cls.split(' ');
@@ -117,6 +122,9 @@ export function removeClass(el, cls) {
 };
 
 /* istanbul ignore next */
+/**
+ *  特殊情况: float属性的访问
+ */
 export const getStyle = ieVersion < 9 ? function(element, styleName) {
   if (isServer) return;
   if (!element || !styleName) return null;
@@ -128,6 +136,7 @@ export const getStyle = ieVersion < 9 ? function(element, styleName) {
     switch (styleName) {
       case 'opacity':
         try {
+          // ? element.filters 是什么属性
           return element.filters.item('alpha').opacity / 100;
         } catch (e) {
           return 1.0;

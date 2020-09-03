@@ -1,10 +1,13 @@
 import Vue from 'vue';
 import { addClass, removeClass } from 'element-ui/src/utils/dom';
 
+// popupmanager是对所有element弹出层如message、loading等的管理
+
 let hasModal = false;
 let hasInitZIndex = false;
 let zIndex;
 
+// 如果没有modalDom, 就新建一个并赋给opupManager
 const getModal = function() {
   if (Vue.prototype.$isServer) return;
   let modalDom = PopupManager.modalDom;
@@ -14,7 +17,8 @@ const getModal = function() {
     hasModal = false;
     modalDom = document.createElement('div');
     PopupManager.modalDom = modalDom;
-
+    
+    // touchmove: 当手指在屏幕上滑动的时候连续地触发。在这个事件发生期间，调用preventDefault()事件可以阻止滚动。
     modalDom.addEventListener('touchmove', function(event) {
       event.preventDefault();
       event.stopPropagation();
@@ -56,11 +60,13 @@ const PopupManager = {
 
   modalStack: [],
 
+  // 点击关闭该弹出层
   doOnModalClick: function() {
     const topItem = PopupManager.modalStack[PopupManager.modalStack.length - 1];
     if (!topItem) return;
 
     const instance = PopupManager.getInstance(topItem.id);
+    // 如果该弹出层有closeOnClickModal，那么执行关闭
     if (instance && instance.closeOnClickModal) {
       instance.close();
     }
@@ -80,12 +86,14 @@ const PopupManager = {
       }
     }
 
+    // 如果没有该modal的话就新建一个，并添加到modalstack里
     const modalDom = getModal();
 
     addClass(modalDom, 'v-modal');
     if (this.modalFade && !hasModal) {
       addClass(modalDom, 'v-modal-enter');
     }
+    // 给modaldom添加modalclass
     if (modalClass) {
       let classArr = modalClass.trim().split(/\s+/);
       classArr.forEach(item => addClass(modalDom, item));
@@ -93,7 +101,8 @@ const PopupManager = {
     setTimeout(() => {
       removeClass(modalDom, 'v-modal-enter');
     }, 200);
-
+    
+    // 11 是 documentfragment
     if (dom && dom.parentNode && dom.parentNode.nodeType !== 11) {
       dom.parentNode.appendChild(modalDom);
     } else {
